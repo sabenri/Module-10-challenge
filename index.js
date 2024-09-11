@@ -1,96 +1,93 @@
-const inquirer = require ('inquirer');
-const fs =require = require('fs');
-const { Circle, Square} = require('');
+const inquirer = require('inquirer');
+const fs = require('fs');
+
+const { Circle, Square } = require('./lib/Shapes');
 
 const questions = [
     {
-        type:'input',
-        name:'Title',
-        message:'Enter 3 characters for your title:',
-
+        type: 'input',
+        name: 'title',
+        message: 'Enter 3 characters for your title:',
     },
     {
-        type:'input',
-        name:'TitleColor',
-        message:'Enter a color for your title',
-
+        type: 'input',
+        name: 'titleColor',
+        message: 'Enter a color for your title:',
     },
     {
-        type:'list',
-        name:'Shape',
-        message:'choose a shape:',
-        choices:['Circle','Square'],
-
+        type: 'list',
+        name: 'shape',
+        message: 'Choose a shape:',
+        choices: ['Circle', 'Square'],
     },
     {
-        type:'input',
-        name:'ShapeColor',
-        message:'Enter a color for the shape',
-
-    },
-   
+        type: 'input',
+        name: 'shapeColor',
+        message: 'Enter a color for the shape:',
+    }
 ];
 
 function writeFile(fileName, data) {
     fs.writeFile(fileName, data, (err) =>
-        err ? console.log(err) : console.log ('SVG Logo Completed')
+        err ? console.log(err) : console.log('SVG Logo Completed')
     );
-}
-class svgProperties{
-    constructor(){
-        this.Text ='';
-        this.Shape ='';
+};
 
+class SvgProperties {
+    constructor() {
+        this.text = '';
+        this.shape = '';
     }
-render() {
-    return `
-    <svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
-        ${this.Shape}
-        ${this.Text}
-    </svg>
-    `;
+    render() {
+        return `
+        <svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+            ${this.shape}
+            ${this.text}
+        </svg>
+        `;
+    }
+
+    setText(text, color) {
+        this.text = `
+        <text x="150" y="115" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`;
+    }
+
+    setShape(shape) {
+        this.shape = shape.render();
+    }
 }
 
-setText(text, color) {
-    this.Text =`
-    <text x="125" y="125" font-size="25" text-anchor="middle" fill="${color}">${text}</text>`;
-}
-setShape(Shape) {
-    this.Shape = Shape.render();
-}
-}
+async function run() {
+    const response = await inquirer.prompt(questions);
+    let { title, titleColor, shape, shapeColor } = response;
 
-async function run() { 
-    const response = await inquirer.prompt (questions);
-    let {title, TitleColor, Shape, ShapeColor} = response;
-
-    if (TitleColor.lenght >3) {
-        console.log ('Please enter no more that 3 characters');
+    if (title.length > 3) {
+        console.log('Please enter no more than 3 characters for the title.');
         return;
     }
-    
-    console.log('${Title} is the title for your logo');
-    console.log('${TitleColor} is the color of the text');
-    console.log('${Shape} is the shape for your logo');
-    console,log('${ShapeColor} is the color for your logo');
 
-    let shapeObj; 
+    console.log(`${title} is the title for your logo`);
+    console.log(`${titleColor} is the color of the text`);
+    console.log(`${shape} is the shape for your logo`);
+    console.log(`${shapeColor} is the color for your shape`);
+
+    let shapeObj;
     switch (shape) {
-        case 'shape':
+        case 'Circle':
             shapeObj = new Circle();
             break;
-            case 'Square':
-                shapeObj = new Square
-                break;
+        case 'Square':
+            shapeObj = new Square();
+            break;
     }
 
-    shapeObj.ShapeColor(ShapeColor);
-    const svgFile = new svgProperties();
-    svgFile.setText(Title, TitleColor);
+    shapeObj.setShapeColor(shapeColor);
+    const svgFile = new SvgProperties();
+    svgFile.setText(title, titleColor);
     svgFile.setShape(shapeObj);
     const svg = svgFile.render();
 
-    writeToFile('logo.svg', svg)   
+    writeFile('logo.svg', svg);
 }
 
 run();
