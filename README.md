@@ -3,6 +3,10 @@
   ## Description 
   This project is used to make a simple logo using OOP. It allows the user to input 3 characters as the title and choose the color of the text. As well as choosing a simple shape and color for the background 
 
+
+  ## demo
+  https://drive.google.com/file/d/1pxdwMflVqOFxdcVro16t_Tg4nmra34_r/view?usp=sharing
+  
   ## Table of Contents
   - [Installation](#Installation)
   - [Usage](#Usage)
